@@ -5,6 +5,7 @@ resource "aws_eks_cluster" "main" {
 
   vpc_config {
     subnet_ids = var.subnet_ids
+    endpoint_public_access = true
   }
 
   access_config {
@@ -24,17 +25,17 @@ data "aws_iam_role" "eks_node_role" {
 # Attach necessary policies for Worker Nodes
 resource "aws_iam_role_policy_attachment" "worker_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = data.aws_iam_role.eks_node_role.name
+  role       = data.aws_iam_role.eks_node_role.arn
 }
 
 resource "aws_iam_role_policy_attachment" "worker_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = data.aws_iam_role.eks_node_role.name
+  role       = data.aws_iam_role.eks_node_role.arn
 }
 
 resource "aws_iam_role_policy_attachment" "worker_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = data.aws_iam_role.eks_node_role.name
+  role       = data.aws_iam_role.eks_node_role.arn
 }
 
 # Create EKS Node Group
