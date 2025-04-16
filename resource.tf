@@ -8,10 +8,6 @@ resource "aws_eks_cluster" "main" {
     endpoint_public_access = true
   }
 
-  access_config {
-    authentication_mode = "API"
-  }
-
   depends_on = [
     aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy
   ]
