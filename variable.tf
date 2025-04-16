@@ -55,3 +55,9 @@ variable "max_unavailable" {
   type        = number
   default     = 1
 }
+
+variable "region" {
+  description = "AWS region to deploy EKS"
+  type        = string
+  default     = "us-east-1"  # or any region you are working in
+}
