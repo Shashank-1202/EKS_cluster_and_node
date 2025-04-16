@@ -85,7 +85,7 @@ resource "null_resource" "configure_aws_auth" {
 
   provisioner "local-exec" {
     command = <<EOT
-cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply --validate=false -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
