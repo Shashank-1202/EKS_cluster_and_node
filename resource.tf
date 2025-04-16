@@ -21,17 +21,17 @@ data "aws_iam_role" "eks_node_role" {
 # Attach necessary policies for Worker Nodes
 resource "aws_iam_role_policy_attachment" "worker_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = data.aws_iam_role.eks_node_role.arn
+  role       = data.aws_iam_role.eks_node_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "worker_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = data.aws_iam_role.eks_node_role.arn
+  role       = data.aws_iam_role.eks_node_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "worker_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = data.aws_iam_role.eks_node_role.arn
+  role       = data.aws_iam_role.eks_node_role.name
 }
 
 # Create EKS Node Group
