@@ -60,3 +60,50 @@ resource "aws_eks_node_group" "main" {
     aws_iam_role_policy_attachment.worker_AmazonEC2ContainerRegistryReadOnly
   ]
 }
+
+
+
+
+# Automatically Update Kubeconfig for kubectl Access
+resource "null_resource" "update_kubeconfig_v2" {
+  provisioner "local-exec" {
+    command = "aws eks --region us-east-1 update-kubeconfig --name main"
+  }
+
+  depends_on = [
+    aws_eks_cluster.main,
+    aws_eks_node_group.main
+  ]
+}
+
+# Add Admin IAM Role to aws-auth ConfigMap
+resource "null_resource" "configure_aws_auth" {
+  provisioner "local-exec" {
+    command = <<EOT
+      cat <<EOF | kubectl apply -f -
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: aws-auth
+        namespace: kube-system
+      data:
+        mapRoles: |
+          - rolearn: ${data.aws_iam_role.eks_node_role.arn}
+            username: system:node:EC2PrivateDNSName
+            groups:
+              - system:bootstrappers
+              - system:nodes
+          - rolearn: ${data.aws_iam_role.eks_role.arn}
+            username: admin
+            groups:
+              - system:masters
+      EOF
+    EOT
+  }
+
+  depends_on = [
+  aws_eks_cluster.main,
+  null_resource.update_kubeconfig_v2
+]
+}
+
